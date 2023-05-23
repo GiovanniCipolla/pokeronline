@@ -43,6 +43,17 @@ public class Tavolo {
 	public Tavolo() {
 		super();
 	}
+	
+
+	public Tavolo(Long id, Integer esperienzaMinima, Double cifraMinima, String denominazione, Utente utenteCreazione) {
+		super();
+		this.id = id;
+		this.esperienzaMinima = esperienzaMinima;
+		this.cifraMinima = cifraMinima;
+		this.denominazione = denominazione;
+		this.utenteCreazione = utenteCreazione;
+	}
+
 
 	public Long getId() {
 		return id;

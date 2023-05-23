@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "utente")
@@ -47,13 +48,25 @@ public class Utente {
 		super();
 	}
 
-	public Utente(String username,String password, String nome, String cognome,LocalDate dataRegistrazione) {
+	public Utente(String username,String password, String nome, String cognome,LocalDate dataRegistrazione, Integer esperienzaAccumulata, Double creditoAccumulato) {
 		super();
 		this.nome = nome;
 		this.cognome = cognome;
 		this.username = username;
 		this.password = password;
 		this.dataRegistrazione = dataRegistrazione;
+		this.esperienzaAccumulata = esperienzaAccumulata;
+		this.creditoAccumulato = creditoAccumulato;
+	}
+
+	
+
+	public Utente(Long id, String username, Integer esperienzaAccumulata, Double creditoAccumulato) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.esperienzaAccumulata = esperienzaAccumulata;
+		this.creditoAccumulato = creditoAccumulato;
 	}
 
 	public Long getId() {
