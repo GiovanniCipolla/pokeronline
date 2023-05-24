@@ -13,7 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
+
 
 @Entity
 @Table(name = "utente")
@@ -155,6 +155,14 @@ public class Utente {
 
 	public boolean isDisabilitato() {
 		return this.stato != null && this.stato.equals(StatoUtente.DISABILITATO);
+	}
+	
+	public boolean isAdmin() {
+		for (Ruolo ruoloItem : ruoli) {
+			if (ruoloItem.getCodice().equals(Ruolo.ROLE_ADMIN))
+				return true;
+		}
+		return false;
 	}
 
 }

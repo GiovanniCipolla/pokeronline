@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,14 +93,23 @@ public class TavoloServiceImpl implements TavoloService {
 	public TavoloDTO aggiorna(TavoloDTO tavolo, Long idDaAggiornare) {
 
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		Utente utenteInSessione = utenteService.findByUsername(username);
 
-		if (tavolo.getUtenteCreazione() != null && !tavolo.getUtenteCreazione().getUsername().equals(username))
+		if ((tavolo.getUtenteCreazione() != null && !tavolo.getUtenteCreazione().getUsername().equals(username))
+				&& !utenteService.findByUsername(username).isAdmin())
 			throw new UtenteNonValidoException();
 
 		tavolo.setId(idDaAggiornare);
+		tavolo.setUtenteCreazione(UtenteDTO.buildUtenteDTOFromModel(utenteInSessione));
 
 		Tavolo tavoloDaAggiornare = tavolo.buildTavoloModel();
 
+		if (tavoloDaAggiornare.getEsperienzaMinima() == null)
+			tavoloDaAggiornare.setEsperienzaMinima(0);
+
+		if (tavoloDaAggiornare.getCifraMinima() == null)
+			tavoloDaAggiornare.setCifraMinima(1D);
+		
 		repository.save(tavoloDaAggiornare);
 
 		return TavoloDTO.buildTavoloDTOFromModel(tavoloDaAggiornare, true);
@@ -108,18 +120,28 @@ public class TavoloServiceImpl implements TavoloService {
 	public void eliminaTavolo(Long idDaEliminare) {
 
 		Tavolo tavolo = repository.findById(idDaEliminare).orElse(null);
-		
+
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
 		if (tavolo.getUtenteCreazione() != null && !tavolo.getUtenteCreazione().getUsername().equals(username))
 			throw new UtenteNonValidoException();
-		
-		if(!tavolo.getGiocatori().isEmpty())
-			throw new GiocatoriNelTavoloException();
-		
-		repository.deleteById(idDaEliminare);
-		
 
+		if (!tavolo.getGiocatori().isEmpty())
+			throw new GiocatoriNelTavoloException();
+
+		repository.deleteById(idDaEliminare);
+
+	}
+
+	@Override
+	public Page<Tavolo> findByExampleNativeWithPagination(Tavolo example, Integer pageNo, Integer pageSize,
+			String sortBy) {
+
+		
+		
+		return repository.findByExampleNativeWithPagination(example.getDenominazione(), example.getEsperienzaMinima(),
+				example.getCifraMinima(), example.getDataCreazione(),
+				PageRequest.of(pageNo, pageSize, Sort.by(sortBy)));
 	}
 
 }

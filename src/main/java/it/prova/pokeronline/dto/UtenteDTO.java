@@ -34,6 +34,13 @@ public class UtenteDTO {
 		this.creditoAccumulato = creditoAccumulato;
 	}
 
+	
+
+	public UtenteDTO(@NotBlank(message = "{username.notblank}") String username) {
+		super();
+		this.username = username;
+	}
+
 	public Long getId() {
 		return id;
 	}

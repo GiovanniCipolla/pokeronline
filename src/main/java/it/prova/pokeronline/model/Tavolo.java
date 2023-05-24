@@ -55,6 +55,29 @@ public class Tavolo {
 	}
 
 
+	
+
+
+	public Tavolo(Long id, Integer esperienzaMinima, Double cifraMinima, String denominazione) {
+		super();
+		this.id = id;
+		this.esperienzaMinima = esperienzaMinima;
+		this.cifraMinima = cifraMinima;
+		this.denominazione = denominazione;
+	}
+
+
+	public Tavolo(Long id, Integer esperienzaMinima, Double cifraMinima, String denominazione,
+			LocalDate dataCreazione) {
+		super();
+		this.id = id;
+		this.esperienzaMinima = esperienzaMinima;
+		this.cifraMinima = cifraMinima;
+		this.denominazione = denominazione;
+		this.dataCreazione = dataCreazione;
+	}
+
+
 	public Long getId() {
 		return id;
 	}

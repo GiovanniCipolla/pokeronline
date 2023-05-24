@@ -8,6 +8,10 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import it.prova.pokeronline.model.Tavolo;
@@ -155,8 +159,11 @@ public class TavoloDTO {
 
 	public Tavolo buildTavoloModel() {
 		Tavolo result = new Tavolo(this.id, this.esperienzaMinima, this.cifraMinima,
-				this.denominazione, this.utenteCreazione.buildUtenteModel());
-
+				this.denominazione);
+		
+		if(this.utenteCreazione != null)
+			result.setUtenteCreazione(this.utenteCreazione.buildUtenteModel());
+		
 		return result;
 	}
 
@@ -169,4 +176,10 @@ public class TavoloDTO {
 		}).collect(Collectors.toList());
 	}
 	
+	public static Page<TavoloDTO> fromModelPageToDTOPage(Page<Tavolo> input) {
+		return new PageImpl<>(createTavoloDTOListFromModelList(input.getContent(), false),
+				PageRequest.of(input.getPageable().getPageNumber(), input.getPageable().getPageSize(),
+						input.getPageable().getSort()),
+				input.getTotalElements());
+	}
 }
