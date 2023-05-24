@@ -1,6 +1,7 @@
 package it.prova.pokeronline.model;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 
 @Entity
@@ -67,6 +70,19 @@ public class Utente {
 		this.username = username;
 		this.esperienzaAccumulata = esperienzaAccumulata;
 		this.creditoAccumulato = creditoAccumulato;
+	}
+
+	
+
+	public Utente(Long id, String nome, String cognome, String username, LocalDate dataRegistrazione,
+			StatoUtente stato) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.cognome = cognome;
+		this.username = username;
+		this.dataRegistrazione = dataRegistrazione;
+		this.stato = stato;
 	}
 
 	public Long getId() {

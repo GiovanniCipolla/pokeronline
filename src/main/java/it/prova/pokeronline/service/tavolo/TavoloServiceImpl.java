@@ -2,7 +2,6 @@ package it.prova.pokeronline.service.tavolo;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,12 +20,14 @@ import it.prova.pokeronline.exception.EsperienzaInsufficienteException;
 import it.prova.pokeronline.exception.GiocatoriNelTavoloException;
 import it.prova.pokeronline.exception.IdNonValidoException;
 import it.prova.pokeronline.exception.ImpossibileGiocareCreditoException;
+import it.prova.pokeronline.exception.NessunTavoloADisposizioneLastGameException;
 import it.prova.pokeronline.exception.NonSedutoAlTavoloException;
 import it.prova.pokeronline.exception.UtenteNonValidoException;
 import it.prova.pokeronline.model.Tavolo;
 import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.repository.Tavolo.TavoloRepository;
 import it.prova.pokeronline.service.utente.UtenteService;
+import it.prova.pokeronline.web.api.TavoloController;
 
 @Service
 @Transactional
@@ -265,5 +266,35 @@ public class TavoloServiceImpl implements TavoloService {
 
 		return result;
 	}
+
+	@Override
+	public TavoloDTO lastGame() {
+		
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		Utente utenteInSessione = utenteService.findByUsername(username);
+		
+		List<Tavolo> tavoliPresenti = (List<Tavolo>) repository.findAll();
+		
+		for (Tavolo tavoloItem : tavoliPresenti) {
+			if(tavoloItem.getGiocatori().contains(utenteInSessione))
+				return TavoloDTO.buildTavoloDTOFromModel(tavoloItem, true);
+		}
+		
+		throw new NessunTavoloADisposizioneLastGameException();
+	}
+
+	@Override
+	public Page<Tavolo> cercaTavoliDisponibili(Integer pageNo, Integer pageSize, String sortBy) {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		Utente utenteInSessione = utenteService.findByUsername(username);
+		Tavolo example = new Tavolo();
+		example.setCifraMinima(utenteInSessione.getCreditoAccumulato());
+		example.setEsperienzaMinima(utenteInSessione.getEsperienzaAccumulata());
+		
+		return repository.findByExampleNativeWithPagination(example.getDenominazione(), example.getEsperienzaMinima(),
+				example.getCifraMinima(), example.getDataCreazione(),
+				PageRequest.of(pageNo, pageSize, Sort.by(sortBy)));
+	}
+	
 
 }

@@ -26,9 +26,14 @@ public interface TavoloService {
 	public Page<Tavolo> findByExampleNativeWithPagination(Tavolo example, Integer pageNo, Integer pageSize,
 			String sortBy);
 	
+	public Page<Tavolo> cercaTavoliDisponibili( Integer pageNo, Integer pageSize,
+			String sortBy);
+	
 	public TavoloDTO uniscitiAlTavolo(Long idTavolo);
 	
 	public RiscontroGiocataDTO gioca(Long idTavolo);
 	
 	public AlzatiDalTavoloDTO alzati(Long idTavolo);
+	
+	public TavoloDTO lastGame();
 }

@@ -1,6 +1,5 @@
 package it.prova.pokeronline.web.api;
 
-
 import java.util.List;
 
 import javax.validation.Valid;
@@ -34,12 +33,10 @@ public class TavoloController {
 	@Autowired
 	private TavoloService tavoloService;
 
-	
 	@GetMapping
 	public List<TavoloDTO> visualizzaTavoli() {
 		return tavoloService.listAll();
 	}
-	
 
 	@GetMapping("/{id}")
 	public TavoloDTO visualizza(@PathVariable(required = true) Long id) {
@@ -50,62 +47,71 @@ public class TavoloController {
 	public TavoloDTO visualizzaEager(@PathVariable(required = true) Long id) {
 		return tavoloService.visualizzaTavoloEager(id);
 	}
-	
+
 	@PostMapping("/searchNativeWithPagination")
 	public ResponseEntity<Page<TavoloDTO>> searchNativePaginated(@RequestBody TavoloDTO example,
 			@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "0") Integer pageSize,
 			@RequestParam(defaultValue = "id") String sortBy) {
 
-		
 		Page<Tavolo> entityPageResults = tavoloService.findByExampleNativeWithPagination(example.buildTavoloModel(),
 				pageNo, pageSize, sortBy);
 
-		return new ResponseEntity<Page<TavoloDTO>>(TavoloDTO.fromModelPageToDTOPage(entityPageResults),
-				HttpStatus.OK);
+		return new ResponseEntity<Page<TavoloDTO>>(TavoloDTO.fromModelPageToDTOPage(entityPageResults), HttpStatus.OK);
 	}
-	
-	
-	
+
+	@PostMapping("/cercaTavoliDisponibili")
+	public ResponseEntity<Page<TavoloDTO>> cercaTavoliDisponibili(@RequestParam(defaultValue = "0") Integer pageNo,
+			@RequestParam(defaultValue = "0") Integer pageSize, @RequestParam(defaultValue = "id") String sortBy) {
+
+		Page<Tavolo> entityPageResults = tavoloService.cercaTavoliDisponibili(pageNo, pageSize, sortBy);
+
+		return new ResponseEntity<Page<TavoloDTO>>(TavoloDTO.fromModelPageToDTOPage(entityPageResults), HttpStatus.OK);
+	}
+
 	@PostMapping("/private")
 	public TavoloDTO createNew(@Valid @RequestBody TavoloDTO tavoloInput) {
-		
+
 		if (tavoloInput.getId() != null)
 			throw new IdNotNullForInsertException("Non è ammesso fornire un id per la creazione");
-		
+
 		return tavoloService.creaTavolo(tavoloInput);
 	}
-	
+
 	@PutMapping("/private/{id}")
 	public TavoloDTO aggiorna(@Valid @RequestBody TavoloDTO tavoloInput, @PathVariable(required = true) Long id) {
-		
+
 		if (tavoloInput.getId() != null)
 			throw new IdNotNullForInsertException("Non è ammesso fornire un id nel body per la modifica");
-		
+
 		return tavoloService.aggiorna(tavoloInput, id);
 	}
-	
+
 	@DeleteMapping("/private/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable(required = true) Long id) {
 		tavoloService.eliminaTavolo(id);
 	}
-	
+
 	@GetMapping("/entraNelTavolo/{id}")
 	public TavoloDTO entraNelTavolo(@PathVariable(required = true) Long id) {
 		return tavoloService.uniscitiAlTavolo(id);
 	}
-	
+
 	@PostMapping("/giocaNelTavolo/{id}")
 	public RiscontroGiocataDTO giocaNelTavolo(@PathVariable(required = true) Long id) {
-		
+
 		return tavoloService.gioca(id);
-		
+
 	}
-	
+
 	@GetMapping("/lasciaIlTavolo/{id}")
 	public AlzatiDalTavoloDTO lasciaIlTavolo(@PathVariable(required = true) Long id) {
 		return tavoloService.alzati(id);
 	}
 
-	
+	@GetMapping("/lastGame")
+	public TavoloDTO lastGame() {
+		return tavoloService.lastGame();
+	}
+
 }

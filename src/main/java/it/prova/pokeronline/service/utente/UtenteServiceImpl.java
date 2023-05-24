@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import it.prova.pokeronline.dto.GestioneUtenteDTO;
 import it.prova.pokeronline.dto.UtenteDTO;
 import it.prova.pokeronline.model.StatoUtente;
 import it.prova.pokeronline.model.Utente;
@@ -40,7 +41,7 @@ public class UtenteServiceImpl implements UtenteService {
 	}
 
 	@Transactional
-	public void aggiorna(Utente utenteInstance) {
+	public Utente aggiorna(Utente utenteInstance) {
 		// deve aggiornare solo nome, cognome, username, ruoli
 		Utente utenteReloaded = repository.findById(utenteInstance.getId()).orElse(null);
 		if (utenteReloaded == null)
@@ -49,14 +50,14 @@ public class UtenteServiceImpl implements UtenteService {
 		utenteReloaded.setCognome(utenteInstance.getCognome());
 		utenteReloaded.setUsername(utenteInstance.getUsername());
 		utenteReloaded.setRuoli(utenteInstance.getRuoli());
-		repository.save(utenteReloaded);
+		return repository.save(utenteReloaded);
 	}
 
 	@Transactional
-	public void inserisciNuovo(Utente utenteInstance) {
+	public Utente inserisciNuovo(Utente utenteInstance) {
 		utenteInstance.setStato(StatoUtente.CREATO);
 		utenteInstance.setPassword(passwordEncoder.encode(utenteInstance.getPassword()));
-		repository.save(utenteInstance);
+		return repository.save(utenteInstance);
 	}
 
 	@Transactional
@@ -66,9 +67,8 @@ public class UtenteServiceImpl implements UtenteService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Utente> findByExample(Utente example) {
-		// TODO Da implementare
-		return listAllUtenti();
+	public List<GestioneUtenteDTO> findByExample(GestioneUtenteDTO example) {		
+		return GestioneUtenteDTO.buildGestioneUtenteDTOListFromModelList(repository.findByExample(example.buildGestioneUtenteModel(true)));
 	}
 
 	@Transactional

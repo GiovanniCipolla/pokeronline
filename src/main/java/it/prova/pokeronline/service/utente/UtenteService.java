@@ -2,6 +2,7 @@ package it.prova.pokeronline.service.utente;
 
 import java.util.List;
 
+import it.prova.pokeronline.dto.GestioneUtenteDTO;
 import it.prova.pokeronline.dto.UtenteDTO;
 import it.prova.pokeronline.model.Utente;
 
@@ -14,13 +15,13 @@ public interface UtenteService {
 
 	public Utente caricaSingoloUtenteConRuoli(Long id);
 
-	public void aggiorna(Utente utenteInstance);
+	public Utente aggiorna(Utente utenteInstance);
 
-	public void inserisciNuovo(Utente utenteInstance);
+	public Utente inserisciNuovo(Utente utenteInstance);
 
 	public void rimuovi(Long idToRemove);
 
-	public List<Utente> findByExample(Utente example);
+	public List<GestioneUtenteDTO> findByExample(GestioneUtenteDTO example);
 
 	public Utente findByUsernameAndPassword(String username, String password);
 
@@ -31,4 +32,5 @@ public interface UtenteService {
 	public Utente findByUsername(String username);
 	
 	public UtenteDTO ricarica(Double cifraDaRicaricare);	
+	
 }
