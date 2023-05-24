@@ -3,10 +3,12 @@ package it.prova.pokeronline.service.utente;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import it.prova.pokeronline.dto.UtenteDTO;
 import it.prova.pokeronline.model.StatoUtente;
 import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.repository.Utente.UtenteRepository;
@@ -97,6 +99,22 @@ public class UtenteServiceImpl implements UtenteService {
 	public Utente findByUsername(String username) {
 		return repository.findByUsername(username).orElse(null);
 	}
+
+	@Override
+	@Transactional
+	public UtenteDTO ricarica(Double cifraDaRicaricare) {
+		
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		Utente utenteInSessione = findByUsername(username);
+		
+		Double creditoTotale = utenteInSessione.getCreditoAccumulato() + cifraDaRicaricare;
+		
+		utenteInSessione.setCreditoAccumulato(creditoTotale);
+		
+		return UtenteDTO.buildUtenteDTOFromModel(utenteInSessione);
+	}
+	
+	
 
 
 

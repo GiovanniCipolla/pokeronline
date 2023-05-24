@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import it.prova.pokeronline.dto.AlzatiDalTavoloDTO;
+import it.prova.pokeronline.dto.RiscontroGiocataDTO;
 import it.prova.pokeronline.dto.TavoloDTO;
 import it.prova.pokeronline.model.Tavolo;
 import it.prova.pokeronline.service.tavolo.TavoloService;
@@ -62,6 +64,8 @@ public class TavoloController {
 				HttpStatus.OK);
 	}
 	
+	
+	
 	@PostMapping("/private")
 	public TavoloDTO createNew(@Valid @RequestBody TavoloDTO tavoloInput) {
 		
@@ -84,6 +88,23 @@ public class TavoloController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable(required = true) Long id) {
 		tavoloService.eliminaTavolo(id);
+	}
+	
+	@GetMapping("/entraNelTavolo/{id}")
+	public TavoloDTO entraNelTavolo(@PathVariable(required = true) Long id) {
+		return tavoloService.uniscitiAlTavolo(id);
+	}
+	
+	@PostMapping("/giocaNelTavolo/{id}")
+	public RiscontroGiocataDTO giocaNelTavolo(@PathVariable(required = true) Long id) {
+		
+		return tavoloService.gioca(id);
+		
+	}
+	
+	@GetMapping("/lasciaIlTavolo/{id}")
+	public AlzatiDalTavoloDTO lasciaIlTavolo(@PathVariable(required = true) Long id) {
+		return tavoloService.alzati(id);
 	}
 
 	

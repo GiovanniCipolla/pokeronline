@@ -2,6 +2,7 @@ package it.prova.pokeronline.service.utente;
 
 import java.util.List;
 
+import it.prova.pokeronline.dto.UtenteDTO;
 import it.prova.pokeronline.model.Utente;
 
 
@@ -29,5 +30,5 @@ public interface UtenteService {
 
 	public Utente findByUsername(String username);
 	
-	
+	public UtenteDTO ricarica(Double cifraDaRicaricare);	
 }

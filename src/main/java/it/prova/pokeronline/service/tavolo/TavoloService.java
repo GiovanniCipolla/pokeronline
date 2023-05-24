@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
+import it.prova.pokeronline.dto.AlzatiDalTavoloDTO;
+import it.prova.pokeronline.dto.RiscontroGiocataDTO;
 import it.prova.pokeronline.dto.TavoloDTO;
 import it.prova.pokeronline.model.Tavolo;
 
@@ -23,4 +25,10 @@ public interface TavoloService {
 	
 	public Page<Tavolo> findByExampleNativeWithPagination(Tavolo example, Integer pageNo, Integer pageSize,
 			String sortBy);
+	
+	public TavoloDTO uniscitiAlTavolo(Long idTavolo);
+	
+	public RiscontroGiocataDTO gioca(Long idTavolo);
+	
+	public AlzatiDalTavoloDTO alzati(Long idTavolo);
 }
