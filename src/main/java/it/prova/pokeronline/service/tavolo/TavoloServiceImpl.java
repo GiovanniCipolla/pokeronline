@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import it.prova.pokeronline.dto.AlzatiDalTavoloDTO;
 import it.prova.pokeronline.dto.RiscontroGiocataDTO;
+import it.prova.pokeronline.dto.SvuotaTavoliDTO;
 import it.prova.pokeronline.dto.TavoloDTO;
 import it.prova.pokeronline.dto.UtenteDTO;
 import it.prova.pokeronline.exception.CreditoInsufficienteException;
@@ -317,5 +318,15 @@ public class TavoloServiceImpl implements TavoloService {
 	public TavoloDTO trovaTavoloConEsperienzaMassima() {
 		return TavoloDTO.buildTavoloDTOFromModel(repository.trovaTavoloConMassimaEsperienzaGiocatori(), true);
 	}
+
+	@Override
+	public String svotaUtenti(List<SvuotaTavoliDTO> tavoli) {
+		
+		repository.svuotaTavoliCreatiDaUtenti(SvuotaTavoliDTO.createListStringToDTO(tavoli));
+		
+		return "fatto";
+	}
+	
+	
 
 }

@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -56,4 +57,8 @@ public interface TavoloRepository extends PagingAndSortingRepository<Tavolo, Lon
 			+ "	WHERE t.datacreazione < u.dataregistrazione", nativeQuery = true)
 	List<Utente> listaUtentiDateSbagliate();
 	
+	@Modifying
+	@Query(value = "delete g.* from tavolo_giocatori g inner join tavolo t on t.id = g.Tavolo_id inner join utente u on u.id = g.giocatori_id\r\n"
+			+ "where g.Tavolo_id in (select u.id from utente u where u.username in :listaUsername);", nativeQuery = true)
+			public void svuotaTavoliCreatiDaUtenti (List<String> listaUsername);
 }

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import it.prova.pokeronline.dto.AlzatiDalTavoloDTO;
 import it.prova.pokeronline.dto.RiscontroGiocataDTO;
+import it.prova.pokeronline.dto.SvuotaTavoliDTO;
 import it.prova.pokeronline.dto.TavoloDTO;
 import it.prova.pokeronline.model.Tavolo;
 import it.prova.pokeronline.service.tavolo.TavoloService;
@@ -131,5 +132,15 @@ public class TavoloController {
 	public TavoloDTO trovaTavoloConMassimaEsperienzaGiocatori() {
 		return tavoloService.trovaTavoloConEsperienzaMassima();
 	}
+	
+	@PostMapping("/admin/svuotaTavoli")
+	public String svuotaTavoli(@RequestBody List<SvuotaTavoliDTO>tavoli) {
+		
+		tavoloService.svotaUtenti(tavoli);
+		
+		return "fatto";
+		
+	}
+	
 
 }

@@ -46,7 +46,7 @@ public class PokeronlineApplication implements CommandLineRunner {
 		// password non lo
 		// faccio qui perche gia lo fa il service di utente, durante inserisciNuovo
 		if (utenteServiceInstance.findByUsername("admin") == null) {
-			Utente admin = new Utente("admin", "admin", "Mario", "Rossi", LocalDate.now(),50,5000D);
+			Utente admin = new Utente("admin", "Admin", "Giovanni", "Rossi", LocalDate.now(),50,5000D);
 			admin.getRuoli().add(ruoloServiceInstance.cercaPerDescrizioneECodice("Administrator", Ruolo.ROLE_ADMIN));
 			utenteServiceInstance.inserisciNuovoUtente(admin);
 			// l'inserimento avviene come created ma io voglio attivarlo
