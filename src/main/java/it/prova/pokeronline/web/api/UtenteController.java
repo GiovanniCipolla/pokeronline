@@ -69,6 +69,7 @@ public class UtenteController {
 		return GestioneUtenteDTO.buildGestioneUtenteDTOListFromModelList(utenteService.listAllUtenti());
 	}
 
+	
 	@GetMapping("/{id}")
 	public GestioneUtenteDTO findById(@PathVariable(value = "id", required = true) long id) {
 
@@ -81,6 +82,7 @@ public class UtenteController {
 
 	}
 
+	
 	@PutMapping("/{id}")
 	public GestioneUtenteDTO update(@Valid @RequestBody GestioneUtenteDTO utenteInput,
 			@PathVariable(required = true) Long id) {
@@ -96,21 +98,41 @@ public class UtenteController {
 
 	}
 
-	@DeleteMapping("/{id}")
+	
+	@DeleteMapping("/private/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable(required = true) Long id) {
 
 		Utente utente = utenteService.caricaSingoloUtente(id);
 
 		if (utente == null)
-			throw new IdNotNullForInsertException("");
+			throw new IdNotNullForInsertException("non esiste nessun id");
+		
 		utenteService.rimuovi(id);
 
 	}
 	
-	@PostMapping("/seacrh")
+	
+	@PostMapping("/search")
 	public List<GestioneUtenteDTO> findByExample(@RequestBody GestioneUtenteDTO example) {
 		return utenteService.findByExample(example);
 	}
-
+	
+	@PostMapping("/create")
+	public GestioneUtenteDTO creaUtente(@Valid @RequestBody GestioneUtenteDTO utenteInput) {
+		return utenteService.inserisciNuovo(utenteInput);
+	}
+	
+	
+//	@PostMapping("/{id}")
+//	public GestioneUtenteDTO abilitaUtente(@PathVariable(value = "id", required = true) long id) {
+//
+//		Utente utente = utenteService.caricaSingoloUtenteConRuoli(id);
+//
+//		if (utente == null)
+//			throw new IdNotNullForInsertException("");
+//		
+//
+//	}
+	
 }

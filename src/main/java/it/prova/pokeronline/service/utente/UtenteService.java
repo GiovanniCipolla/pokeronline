@@ -17,7 +17,9 @@ public interface UtenteService {
 
 	public Utente aggiorna(Utente utenteInstance);
 
-	public Utente inserisciNuovo(Utente utenteInstance);
+	public void inserisciNuovoUtente(Utente instance);
+	
+	public GestioneUtenteDTO inserisciNuovo(GestioneUtenteDTO utenteInstance);
 
 	public void rimuovi(Long idToRemove);
 
@@ -32,5 +34,7 @@ public interface UtenteService {
 	public Utente findByUsername(String username);
 	
 	public UtenteDTO ricarica(Double cifraDaRicaricare);	
+	
+//	public GestioneUtenteDTO abilita(Long idDaAbilitare);
 	
 }

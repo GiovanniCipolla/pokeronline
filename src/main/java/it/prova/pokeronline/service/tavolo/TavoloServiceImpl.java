@@ -27,7 +27,7 @@ import it.prova.pokeronline.model.Tavolo;
 import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.repository.Tavolo.TavoloRepository;
 import it.prova.pokeronline.service.utente.UtenteService;
-import it.prova.pokeronline.web.api.TavoloController;
+
 
 @Service
 @Transactional
@@ -47,7 +47,7 @@ public class TavoloServiceImpl implements TavoloService {
 		Utente utenteInSessione = utenteService.findByUsername(username);
 
 		if (tavolo.getUtenteCreazione() != null && !tavolo.getUtenteCreazione().getUsername().equals(username))
-			throw new UtenteNonValidoException();
+			throw new UtenteNonValidoException("Non è il tuo tavolo");
 
 		tavolo.setUtenteCreazione(UtenteDTO.buildUtenteDTOFromModel(utenteInSessione));
 
@@ -74,7 +74,7 @@ public class TavoloServiceImpl implements TavoloService {
 		Tavolo tavoloDaVisualizzare = repository.findById(idDaVisualizzare).orElse(null);
 
 		if (tavoloDaVisualizzare == null)
-			throw new IdNonValidoException();
+			throw new IdNonValidoException("non esiste questo tavolo");
 
 		return TavoloDTO.buildTavoloDTOFromModel(tavoloDaVisualizzare, false);
 
@@ -86,7 +86,7 @@ public class TavoloServiceImpl implements TavoloService {
 		Tavolo tavoloDaVisualizzare = repository.findByIdConGiocatori(idDaVisualizzare).orElse(null);
 
 		if (tavoloDaVisualizzare == null)
-			throw new IdNonValidoException();
+			throw new IdNonValidoException("non esiste questo tavolo");
 
 		return TavoloDTO.buildTavoloDTOFromModel(tavoloDaVisualizzare, true);
 	}
@@ -105,7 +105,7 @@ public class TavoloServiceImpl implements TavoloService {
 
 		if ((tavolo.getUtenteCreazione() != null && !tavolo.getUtenteCreazione().getUsername().equals(username))
 				&& !utenteService.findByUsername(username).isAdmin())
-			throw new UtenteNonValidoException();
+			throw new UtenteNonValidoException("utente non valido");
 
 		tavolo.setId(idDaAggiornare);
 		tavolo.setUtenteCreazione(UtenteDTO.buildUtenteDTOFromModel(utenteInSessione));
@@ -132,10 +132,10 @@ public class TavoloServiceImpl implements TavoloService {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
 		if (tavolo.getUtenteCreazione() != null && !tavolo.getUtenteCreazione().getUsername().equals(username))
-			throw new UtenteNonValidoException();
+			throw new UtenteNonValidoException("utente non valido");
 
 		if (!tavolo.getGiocatori().isEmpty())
-			throw new GiocatoriNelTavoloException();
+			throw new GiocatoriNelTavoloException("ci sono giocatori nel tavolo");
 
 		repository.deleteById(idDaEliminare);
 
@@ -158,19 +158,19 @@ public class TavoloServiceImpl implements TavoloService {
 		Tavolo tavolo = repository.findById(idTavolo).orElse(null);
 
 		if (tavolo == null)
-			throw new IdNonValidoException();
+			throw new IdNonValidoException("tavolo non valido");
 
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		Utente utenteInSessione = utenteService.findByUsername(username);
 
 		if (tavolo.getGiocatori().contains(utenteInSessione))
-			throw new NonSedutoAlTavoloException();
+			throw new NonSedutoAlTavoloException("sei gia seduto al tavolo");
 
 		if (utenteInSessione.getCreditoAccumulato() < tavolo.getCifraMinima())
-			throw new CreditoInsufficienteException();
+			throw new CreditoInsufficienteException("non hai il credito per entrare al tavolo, povero pezzente");
 
 		if (utenteInSessione.getEsperienzaAccumulata() < tavolo.getEsperienzaMinima())
-			throw new EsperienzaInsufficienteException();
+			throw new EsperienzaInsufficienteException("non hai esperienza per entrare al tavolo");
 
 		tavolo.getGiocatori().add(utenteInSessione);
 
@@ -185,16 +185,16 @@ public class TavoloServiceImpl implements TavoloService {
 		Tavolo tavolo = repository.findById(idTavolo).orElse(null);
 
 		if (tavolo == null)
-			throw new IdNonValidoException();
+			throw new IdNonValidoException("tavolo non valido");
 
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		Utente utenteInSessione = utenteService.findByUsername(username);
 
 		if (!tavolo.getGiocatori().contains(utenteInSessione))
-			throw new NonSedutoAlTavoloException();
+			throw new NonSedutoAlTavoloException("non sei seduto a questo tavolo");
 
 		if (utenteInSessione.getCreditoAccumulato() == null || utenteInSessione.getCreditoAccumulato() == 0d) {
-			throw new ImpossibileGiocareCreditoException();
+			throw new ImpossibileGiocareCreditoException("non hai una lira, non puoi giocare");
 		}
 
 		double segno = Math.random();
@@ -247,13 +247,13 @@ public class TavoloServiceImpl implements TavoloService {
 		Tavolo tavolo = repository.findById(idTavolo).orElse(null);
 
 		if (tavolo == null)
-			throw new IdNonValidoException();
+			throw new IdNonValidoException("tavolo non valido");
 
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		Utente utenteInSessione = utenteService.findByUsername(username);
 
 		if (!tavolo.getGiocatori().contains(utenteInSessione))
-			throw new NonSedutoAlTavoloException();
+			throw new NonSedutoAlTavoloException("non sei seduto al tavolo , quindi non puoi alzarti");
 
 		tavolo.getGiocatori().remove(utenteInSessione);
 
@@ -280,7 +280,7 @@ public class TavoloServiceImpl implements TavoloService {
 				return TavoloDTO.buildTavoloDTOFromModel(tavoloItem, true);
 		}
 		
-		throw new NessunTavoloADisposizioneLastGameException();
+		throw new NessunTavoloADisposizioneLastGameException("non eri seduto in nessun tavolo");
 	}
 
 	@Override
@@ -294,6 +294,11 @@ public class TavoloServiceImpl implements TavoloService {
 		return repository.findByExampleNativeWithPagination(example.getDenominazione(), example.getEsperienzaMinima(),
 				example.getCifraMinima(), example.getDataCreazione(),
 				PageRequest.of(pageNo, pageSize, Sort.by(sortBy)));
+	}
+
+	@Override
+	public List<Tavolo> tuttiITavoli() {
+		return (List<Tavolo>) repository.findAll();
 	}
 	
 

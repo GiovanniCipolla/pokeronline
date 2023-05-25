@@ -13,6 +13,8 @@ public interface TavoloService {
 	
 	public List<TavoloDTO> listAll();
 	
+	public List<Tavolo> tuttiITavoli();
+	
 	public TavoloDTO creaTavolo(TavoloDTO tavolo);
 	
 	public TavoloDTO visualizzaTavolo(Long idDaVisualizzare);

@@ -24,8 +24,6 @@ public class GestioneUtenteDTO {
 	@Size(min = 8, max = 15, message = "Il valore inserito deve essere lungo tra {min} e {max} caratteri")
 	private String password;
 
-	private String confermaPassword;
-
 	@NotBlank(message = "{nome.notblank}")
 	private String nome;
 
@@ -80,29 +78,25 @@ public class GestioneUtenteDTO {
 
 	public GestioneUtenteDTO(Long id,
 			@NotBlank(message = "{username.notblank}") @Size(min = 3, max = 15, message = "Il valore inserito '${validatedValue}' deve essere lungo tra {min} e {max} caratteri") String username,
-			@NotBlank(message = "{password.notblank}") @Size(min = 8, max = 15, message = "Il valore inserito deve essere lungo tra {min} e {max} caratteri") String password,
-			String confermaPassword, @NotBlank(message = "{nome.notblank}") String nome,
+			@NotBlank(message = "{password.notblank}") @Size(min = 8, max = 15, message = "Il valore inserito deve essere lungo tra {min} e {max} caratteri") String password, @NotBlank(message = "{nome.notblank}") String nome,
 			@NotBlank(message = "{cognome.notblank}") String cognome) {
 		super();
 		this.id = id;
 		this.username = username;
 		this.password = password;
-		this.confermaPassword = confermaPassword;
 		this.nome = nome;
 		this.cognome = cognome;
 	}
 
 	public GestioneUtenteDTO(Long id,
 			@NotBlank(message = "{username.notblank}") @Size(min = 3, max = 15, message = "Il valore inserito '${validatedValue}' deve essere lungo tra {min} e {max} caratteri") String username,
-			@NotBlank(message = "{password.notblank}") @Size(min = 8, max = 15, message = "Il valore inserito deve essere lungo tra {min} e {max} caratteri") String password,
-			String confermaPassword, @NotBlank(message = "{nome.notblank}") String nome,
+			@NotBlank(message = "{password.notblank}") @Size(min = 8, max = 15, message = "Il valore inserito deve essere lungo tra {min} e {max} caratteri") String password, @NotBlank(message = "{nome.notblank}") String nome,
 			@NotBlank(message = "{cognome.notblank}") String cognome, LocalDate dataRegistrazione, StatoUtente stato,
 			Long[] ruoliIds) {
 		super();
 		this.id = id;
 		this.username = username;
 		this.password = password;
-		this.confermaPassword = confermaPassword;
 		this.nome = nome;
 		this.cognome = cognome;
 		this.dataRegistrazione = dataRegistrazione;
@@ -164,14 +158,6 @@ public class GestioneUtenteDTO {
 
 	public void setStato(StatoUtente stato) {
 		this.stato = stato;
-	}
-
-	public String getConfermaPassword() {
-		return confermaPassword;
-	}
-
-	public void setConfermaPassword(String confermaPassword) {
-		this.confermaPassword = confermaPassword;
 	}
 
 	public Long[] getRuoliIds() {

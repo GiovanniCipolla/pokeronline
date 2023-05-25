@@ -48,7 +48,7 @@ public class PokeronlineApplication implements CommandLineRunner {
 		if (utenteServiceInstance.findByUsername("admin") == null) {
 			Utente admin = new Utente("admin", "admin", "Mario", "Rossi", LocalDate.now(),50,5000D);
 			admin.getRuoli().add(ruoloServiceInstance.cercaPerDescrizioneECodice("Administrator", Ruolo.ROLE_ADMIN));
-			utenteServiceInstance.inserisciNuovo(admin);
+			utenteServiceInstance.inserisciNuovoUtente(admin);
 			// l'inserimento avviene come created ma io voglio attivarlo
 			utenteServiceInstance.changeUserAbilitation(admin.getId());
 		}
@@ -57,7 +57,7 @@ public class PokeronlineApplication implements CommandLineRunner {
 			Utente classicUser = new Utente("user", "user", "Antonio", "Verdi", LocalDate.now(),70,1300D);
 			classicUser.getRuoli()
 					.add(ruoloServiceInstance.cercaPerDescrizioneECodice("Special player", Ruolo.SPECIAL_PLAYER));
-			utenteServiceInstance.inserisciNuovo(classicUser);
+			utenteServiceInstance.inserisciNuovoUtente(classicUser);
 			// l'inserimento avviene come created ma io voglio attivarlo
 			utenteServiceInstance.changeUserAbilitation(classicUser.getId());
 		}
@@ -66,7 +66,7 @@ public class PokeronlineApplication implements CommandLineRunner {
 			Utente classicUser1 = new Utente("user1", "user1", "Antonioo", "Verdii", LocalDate.now(),0,40D);
 			classicUser1.getRuoli()
 					.add(ruoloServiceInstance.cercaPerDescrizioneECodice("Special player", Ruolo.SPECIAL_PLAYER));
-			utenteServiceInstance.inserisciNuovo(classicUser1);
+			utenteServiceInstance.inserisciNuovoUtente(classicUser1);
 			// l'inserimento avviene come created ma io voglio attivarlo
 			utenteServiceInstance.changeUserAbilitation(classicUser1.getId());
 		}
@@ -75,7 +75,7 @@ public class PokeronlineApplication implements CommandLineRunner {
 			Utente classicUser2 = new Utente("user2", "user2", "Antoniooo", "Verdiii", LocalDate.now(),90,2500D);
 			classicUser2.getRuoli()
 					.add(ruoloServiceInstance.cercaPerDescrizioneECodice("Player", Ruolo.PLAYER));
-			utenteServiceInstance.inserisciNuovo(classicUser2);
+			utenteServiceInstance.inserisciNuovoUtente(classicUser2);
 			// l'inserimento avviene come created ma io voglio attivarlo
 			utenteServiceInstance.changeUserAbilitation(classicUser2.getId());
 		}

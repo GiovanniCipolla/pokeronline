@@ -1,5 +1,6 @@
 package it.prova.pokeronline.service.utente;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import it.prova.pokeronline.dto.GestioneUtenteDTO;
+import it.prova.pokeronline.dto.TavoloDTO;
 import it.prova.pokeronline.dto.UtenteDTO;
 import it.prova.pokeronline.model.StatoUtente;
+import it.prova.pokeronline.model.Tavolo;
 import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.repository.Utente.UtenteRepository;
+import it.prova.pokeronline.service.tavolo.TavoloService;
 
 
 @Service
@@ -24,6 +28,9 @@ public class UtenteServiceImpl implements UtenteService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private TavoloService tavoloService;
 
 	@Transactional(readOnly = true)
 	public List<Utente> listAllUtenti() {
@@ -54,14 +61,17 @@ public class UtenteServiceImpl implements UtenteService {
 	}
 
 	@Transactional
-	public Utente inserisciNuovo(Utente utenteInstance) {
-		utenteInstance.setStato(StatoUtente.CREATO);
-		utenteInstance.setPassword(passwordEncoder.encode(utenteInstance.getPassword()));
-		return repository.save(utenteInstance);
-	}
-
-	@Transactional
 	public void rimuovi(Long idToRemove) {
+		
+		Utente utenteReloaded = repository.findById(idToRemove).orElse(null);
+		
+        List<Tavolo> tavoliPresenti = tavoloService.tuttiITavoli();
+        
+		for (Tavolo tavoloItem : tavoliPresenti) {
+			if(tavoloItem.getGiocatori().contains(utenteReloaded))
+				tavoloItem.getGiocatori().remove(utenteReloaded);
+		}
+		
 		repository.deleteById(idToRemove);
 		;
 	}
@@ -113,6 +123,33 @@ public class UtenteServiceImpl implements UtenteService {
 		
 		return UtenteDTO.buildUtenteDTOFromModel(utenteInSessione);
 	}
+
+	@Override
+	@Transactional
+	public GestioneUtenteDTO inserisciNuovo(GestioneUtenteDTO utenteInstance) {
+		
+		
+		utenteInstance.setDataRegistrazione(LocalDate.now());
+		utenteInstance.setStato(StatoUtente.ATTIVO);
+		utenteInstance.setPassword(passwordEncoder.encode(utenteInstance.getPassword()));
+		return GestioneUtenteDTO.buildGestioneUtenteDTOFromModel(repository.save(utenteInstance.buildGestioneUtenteModel(true)));
+	}
+
+	@Override
+	public void inserisciNuovoUtente(Utente instance) {
+		instance.setDataRegistrazione(LocalDate.now());
+		instance.setStato(StatoUtente.ATTIVO);
+		instance.setPassword(passwordEncoder.encode(instance.getPassword()));
+		repository.save(instance);
+		
+	}
+
+//	@Override
+//	public GestioneUtenteDTO abilita(Long idDaAbilitare) {
+//		
+//		Utente utente =  repository.findById(idDaAbilitare).orElse(null);
+//		
+//	}
 	
 	
 
