@@ -23,7 +23,7 @@ public interface UtenteService {
 
 	public void rimuovi(Long idToRemove);
 
-	public List<GestioneUtenteDTO> findByExample(GestioneUtenteDTO example);
+//	public List<GestioneUtenteDTO> findByExample(GestioneUtenteDTO example);
 
 	public Utente findByUsernameAndPassword(String username, String password);
 

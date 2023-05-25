@@ -113,10 +113,10 @@ public class UtenteController {
 	}
 	
 	
-	@PostMapping("/search")
-	public List<GestioneUtenteDTO> findByExample(@RequestBody GestioneUtenteDTO example) {
-		return utenteService.findByExample(example);
-	}
+//	@PostMapping("/search")
+//	public List<GestioneUtenteDTO> findByExample(@RequestBody GestioneUtenteDTO example) {
+//		return utenteService.findByExample(example);
+//	}
 	
 	@PostMapping("/create")
 	public GestioneUtenteDTO creaUtente(@Valid @RequestBody GestioneUtenteDTO utenteInput) {

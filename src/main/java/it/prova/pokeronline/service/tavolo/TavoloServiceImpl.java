@@ -28,7 +28,6 @@ import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.repository.Tavolo.TavoloRepository;
 import it.prova.pokeronline.service.utente.UtenteService;
 
-
 @Service
 @Transactional
 public class TavoloServiceImpl implements TavoloService {
@@ -269,37 +268,54 @@ public class TavoloServiceImpl implements TavoloService {
 
 	@Override
 	public TavoloDTO lastGame() {
-		
+
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		Utente utenteInSessione = utenteService.findByUsername(username);
-		
+
 		List<Tavolo> tavoliPresenti = (List<Tavolo>) repository.findAll();
-		
+
 		for (Tavolo tavoloItem : tavoliPresenti) {
-			if(tavoloItem.getGiocatori().contains(utenteInSessione))
+			if (tavoloItem.getGiocatori().contains(utenteInSessione))
 				return TavoloDTO.buildTavoloDTOFromModel(tavoloItem, true);
 		}
-		
+
 		throw new NessunTavoloADisposizioneLastGameException("non eri seduto in nessun tavolo");
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Page<Tavolo> cercaTavoliDisponibili(Integer pageNo, Integer pageSize, String sortBy) {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		Utente utenteInSessione = utenteService.findByUsername(username);
 		Tavolo example = new Tavolo();
 		example.setCifraMinima(utenteInSessione.getCreditoAccumulato());
 		example.setEsperienzaMinima(utenteInSessione.getEsperienzaAccumulata());
-		
+
 		return repository.findByExampleNativeWithPagination(example.getDenominazione(), example.getEsperienzaMinima(),
 				example.getCifraMinima(), example.getDataCreazione(),
 				PageRequest.of(pageNo, pageSize, Sort.by(sortBy)));
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Tavolo> tuttiITavoli() {
 		return (List<Tavolo>) repository.findAll();
 	}
-	
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<TavoloDTO> listaTavoliConSogliaEsperienzaGiocatore(Integer soglia) {
+		
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		Utente utenteInSessione = utenteService.findByUsername(username);
+
+		return TavoloDTO.createTavoloDTOListFromModelList(
+				repository.estraiTavoliConAlmenoUnUtenteAlDiSopraDiSoglia(utenteInSessione.getId(), soglia), true);
+	}
+
+	@Override
+	public TavoloDTO trovaTavoloConEsperienzaMassima() {
+		return TavoloDTO.buildTavoloDTOFromModel(repository.trovaTavoloConMassimaEsperienzaGiocatori(), true);
+	}
 
 }

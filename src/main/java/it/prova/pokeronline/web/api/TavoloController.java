@@ -1,6 +1,7 @@
 package it.prova.pokeronline.web.api;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -25,6 +26,7 @@ import it.prova.pokeronline.dto.TavoloDTO;
 import it.prova.pokeronline.model.Tavolo;
 import it.prova.pokeronline.service.tavolo.TavoloService;
 import it.prova.pokeronline.web.api.exception.IdNotNullForInsertException;
+import it.prova.pokeronline.web.api.exception.ValoreEsperienzaException;
 
 @RestController
 @RequestMapping("/api/tavolo")
@@ -112,6 +114,22 @@ public class TavoloController {
 	@GetMapping("/lastGame")
 	public TavoloDTO lastGame() {
 		return tavoloService.lastGame();
+	}
+
+	@GetMapping("/specialGuest/listaTavoliConGiocatoreConSogliaEsperienza")
+	public List<TavoloDTO> listaTavoliConGiocatoreConSogliaEsperienza(
+			@Valid @RequestBody Map<String, Integer> rawValue) {
+
+		if (rawValue.get("sogliaMinima") == null || rawValue.get("sogliaMinima") <= 0)
+			throw new ValoreEsperienzaException("Inserire una cifra maggiore di 0");
+
+		return tavoloService.listaTavoliConSogliaEsperienzaGiocatore(rawValue.get("sogliaMinima"));
+
+	}
+	
+	@GetMapping("/admin/trovaTavoloConMassimaEsperienzaGiocatori")
+	public TavoloDTO trovaTavoloConMassimaEsperienzaGiocatori() {
+		return tavoloService.trovaTavoloConEsperienzaMassima();
 	}
 
 }

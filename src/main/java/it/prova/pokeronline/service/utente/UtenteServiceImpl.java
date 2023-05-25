@@ -4,13 +4,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import it.prova.pokeronline.dto.GestioneUtenteDTO;
-import it.prova.pokeronline.dto.TavoloDTO;
 import it.prova.pokeronline.dto.UtenteDTO;
 import it.prova.pokeronline.model.StatoUtente;
 import it.prova.pokeronline.model.Tavolo;
@@ -30,6 +30,7 @@ public class UtenteServiceImpl implements UtenteService {
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
+	@Lazy
 	private TavoloService tavoloService;
 
 	@Transactional(readOnly = true)
@@ -73,13 +74,12 @@ public class UtenteServiceImpl implements UtenteService {
 		}
 		
 		repository.deleteById(idToRemove);
-		;
 	}
 
-	@Transactional(readOnly = true)
-	public List<GestioneUtenteDTO> findByExample(GestioneUtenteDTO example) {		
-		return GestioneUtenteDTO.buildGestioneUtenteDTOListFromModelList(repository.findByExample(example.buildGestioneUtenteModel(true)));
-	}
+//	@Transactional(readOnly = true)
+//	public List<GestioneUtenteDTO> findByExample(GestioneUtenteDTO example) {		
+//		return GestioneUtenteDTO.buildGestioneUtenteDTOListFromModelList(repository.findByExample(example.buildGestioneUtenteModel(true)));
+//	}
 
 	@Transactional
 	public Utente eseguiAccesso(String username, String password) {
@@ -138,12 +138,13 @@ public class UtenteServiceImpl implements UtenteService {
 	@Override
 	public void inserisciNuovoUtente(Utente instance) {
 		instance.setDataRegistrazione(LocalDate.now());
-		instance.setStato(StatoUtente.ATTIVO);
+		instance.setStato(StatoUtente.CREATO);
 		instance.setPassword(passwordEncoder.encode(instance.getPassword()));
 		repository.save(instance);
 		
 	}
 
+	
 //	@Override
 //	public GestioneUtenteDTO abilita(Long idDaAbilitare) {
 //		
